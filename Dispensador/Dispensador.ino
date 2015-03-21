@@ -10,7 +10,7 @@ NfcAdapter nfc = NfcAdapter(interface); // create an NFC adapter object
 // include the library code:
 #include <LiquidCrystal.h>
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(8, 6, 5, 4, 3, 2);
+LiquidCrystal lcd(7, 6, 5, 4, 3, 8);
 String rec, mes;
 String payloadAsString;
 char chab[20];
@@ -24,22 +24,23 @@ void setup() {
   // Print a message to the LCD.
   lcd.clear();
   lcd.write("NDEF Reader Enabled");
+  attachInterrupt(0, nvi, RISING);
 }
-bool pro = true;
+bool pro = true, por= false;
 void loop() {
-  if (nfc.tagPresent()) // Do an NFC scan to see if an NFC tag is present
+  if (nfc.tagPresent() && pro) // Do an NFC scan to see if an NFC tag is present
   {
     lcd.clear();
     NfcTag tag = nfc.read();
-    Serial.println(tag.getTagType());
+    // Serial.println(tag.getTagType());
     Serial.print("UID: "); Serial.println(tag.getUidString());
     rec = tag.getUidString();
-    rec.toCharArray(chab, 12);
+    /*rec.toCharArray(chab, 12);
     lcd.setCursor(0, 1);
     lcd.write("UID:");
     for (int i = 0; i <= 10; i++) {
       lcd.write(chab[i]);
-    }
+    }*/
     NdefMessage message = tag.getNdefMessage();
     for (int i = 0; i < message.getRecordCount(); i++)
     {
@@ -69,8 +70,101 @@ void loop() {
       Serial.print(chab[i]);
     } Serial.write("\n");
     pro = false;
+    por= true;
+    lcd.write("Que desea comprar?");
   }
-  delay(5000);
+ // delay(5000);
   
+  if (por)
+ { 
+  lcd.setCursor(0, 0);
+  
+ }
+}
+void nvi()
+{
+  
+  if (i == 4) {
+    i = 0;
+  } else {
+    i = i + 1;
+  }
+switch (i)
+  {
+    case 0:
+      lcd.clear();
+      lcd.print("Almuerzo Estudiantil");
+      Serial.println("Almuerzo Estudiantil");
+      lcd.setCursor(0, 1);
+      lcd.print("$3600");
+      break;
+    case 1:
+      lcd.clear();
+      lcd.print("Almuerzo Corriente");
+      Serial.println("Almuerzo Corriente");
+      lcd.setCursor(0, 1);
+      lcd.print("$5600");
+      break;
+    case 2:
+      lcd.clear();
+      lcd.print("Almuerzo Seco");
+      Serial.println("Almuerzo Corriente Seco");
+      lcd.setCursor(0, 1);
+      lcd.print("$5300");
+      break;
+    case 3:
+      lcd.clear();
+      lcd.print("Jugo pequeno");
+      Serial.println("Jugo small");
+      lcd.setCursor(0, 1);
+      lcd.print("$1600");
+      break;
+    case 4:
+      lcd.clear();
+      lcd.print("Jugo grande");
+      Serial.println("Jugo grande");
+      lcd.setCursor(0, 1);
+      lcd.print("$2000");
+      break;
+  }
 }
 
+/*
+  switch (i)
+  {
+    case 0:
+      lcd.clear();
+      lcd.print("Almuerzo Estudiantil");
+      Serial.println("Almuerzo Estudiantil");
+      lcd.setCursor(0, 1);
+      lcd.print("$3600");
+      break;
+    case 1:
+      lcd.clear();
+      lcd.print("Almuerzo Corriente");
+      Serial.println("Almuerzo Corriente");
+      lcd.setCursor(0, 1);
+      lcd.print("$5600");
+      break;
+    case 2:
+      lcd.clear();
+      lcd.print("Almuerzo Corriente Seco");
+      Serial.println("Almuerzo Corriente Seco");
+      lcd.setCursor(0, 1);
+      lcd.print("$5300");
+      break;
+    case 3:
+      lcd.clear();
+      lcd.print("Jugo pequeño");
+      Serial.println("Jugo pequeño");
+      lcd.setCursor(0, 1);
+      lcd.print("$1600");
+      break;
+    case 4:
+      lcd.clear();
+      lcd.print("Jugo grande");
+      Serial.println("Jugo grande");
+      lcd.setCursor(0, 1);
+      lcd.print("$2000");
+      break;
+  }*/

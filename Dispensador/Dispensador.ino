@@ -15,6 +15,8 @@ String rec, mes;
 String payloadAsString;
 char chab[20];
 int l, navi = 8, enter = 13, i;
+String men[] = {"Almuerzo corriente  ", "Almuerzo Seco  ", "Almuerzo estudiantil  ", "Jugo pequeno  ", "Jugo grande  ", "Sopa pequena  ", "Sopa grande  "};
+int precios[] = {5600, 5300, 3600, 1000, 1500, 500, 1200};
 void setup() {
   Serial.begin(115200); // start serial comm
   Serial.println("NDEF Reader");
@@ -25,8 +27,9 @@ void setup() {
   lcd.clear();
   lcd.write("NDEF Reader Enabled");
   attachInterrupt(0, nvi, RISING);
+  pinMode(13, OUTPUT);
 }
-bool pro = true, por= false;
+bool pro = true, por = false;
 void loop() {
   if (nfc.tagPresent() && pro) // Do an NFC scan to see if an NFC tag is present
   {
@@ -61,110 +64,62 @@ void loop() {
     }
     lcd.setCursor(0, 0);
     Serial.println(payloadAsString);
-    l = payloadAsString.length();
-    char chab[l];
-    Serial.println(l);
-    payloadAsString.toCharArray(chab, l);
-    for (int i = 3; i <= l; i++) {
-      lcd.write(chab[i]);
-      Serial.print(chab[i]);
-    } Serial.write("\n");
+    DispLcd1(payloadAsString);
     pro = false;
-    por= true;
-    lcd.write("Que desea comprar?");
+    por = true;
+    // DispLcd(men[i]);
   }
- // delay(5000);
-  
+  delay(2000);
+
   if (por)
- { 
+  {
+    lcd.setCursor(0, 0);
+    if ( digitalRead(13) == 0) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Usted compro");
+      lcd.setCursor(0, 1);
+      DispLcd(men[i]);
+      pro = true;
+      por = false;
+    }
+  }
+  /*lcd.clear();
   lcd.setCursor(0, 0);
-  
- }
+  lcd.print("Cafeteria Alcatraz");*/
+}
+void DispLcd1(String m) {
+  lcd.clear();
+  l = m.length();
+  char chab[l];
+  m.toCharArray(chab, l);
+  for (int i = 3; i <= l; i++) {
+    lcd.write(chab[i]);
+    Serial.print(chab[i]);
+  }
+}
+void DispLcd(String m) {
+  lcd.clear();
+  l = m.length();
+  char chab[l];
+  m.toCharArray(chab, l);
+  for (int i = 0; i <= l - 2; i++) {
+    lcd.write(chab[i]);
+    Serial.print(chab[i]);
+  }
 }
 void nvi()
 {
-  
-  if (i == 4) {
+  Serial.println(i);
+  if (i == 5) {
     i = 0;
   } else {
     i = i + 1;
   }
-switch (i)
-  {
-    case 0:
-      lcd.clear();
-      lcd.print("Almuerzo Estudiantil");
-      Serial.println("Almuerzo Estudiantil");
-      lcd.setCursor(0, 1);
-      lcd.print("$3600");
-      break;
-    case 1:
-      lcd.clear();
-      lcd.print("Almuerzo Corriente");
-      Serial.println("Almuerzo Corriente");
-      lcd.setCursor(0, 1);
-      lcd.print("$5600");
-      break;
-    case 2:
-      lcd.clear();
-      lcd.print("Almuerzo Seco");
-      Serial.println("Almuerzo Corriente Seco");
-      lcd.setCursor(0, 1);
-      lcd.print("$5300");
-      break;
-    case 3:
-      lcd.clear();
-      lcd.print("Jugo pequeno");
-      Serial.println("Jugo small");
-      lcd.setCursor(0, 1);
-      lcd.print("$1600");
-      break;
-    case 4:
-      lcd.clear();
-      lcd.print("Jugo grande");
-      Serial.println("Jugo grande");
-      lcd.setCursor(0, 1);
-      lcd.print("$2000");
-      break;
-  }
+  lcd.setCursor(0, 0);
+  lcd.clear();
+  DispLcd(men[i]);
+  lcd.setCursor(0, 1); lcd.write("$");
+  lcd.setCursor(1, 1);
+  lcd.print(precios[i]);
 }
-
-/*
-  switch (i)
-  {
-    case 0:
-      lcd.clear();
-      lcd.print("Almuerzo Estudiantil");
-      Serial.println("Almuerzo Estudiantil");
-      lcd.setCursor(0, 1);
-      lcd.print("$3600");
-      break;
-    case 1:
-      lcd.clear();
-      lcd.print("Almuerzo Corriente");
-      Serial.println("Almuerzo Corriente");
-      lcd.setCursor(0, 1);
-      lcd.print("$5600");
-      break;
-    case 2:
-      lcd.clear();
-      lcd.print("Almuerzo Corriente Seco");
-      Serial.println("Almuerzo Corriente Seco");
-      lcd.setCursor(0, 1);
-      lcd.print("$5300");
-      break;
-    case 3:
-      lcd.clear();
-      lcd.print("Jugo pequeño");
-      Serial.println("Jugo pequeño");
-      lcd.setCursor(0, 1);
-      lcd.print("$1600");
-      break;
-    case 4:
-      lcd.clear();
-      lcd.print("Jugo grande");
-      Serial.println("Jugo grande");
-      lcd.setCursor(0, 1);
-      lcd.print("$2000");
-      break;
-  }*/

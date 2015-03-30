@@ -50,8 +50,8 @@ void loop() {
         for (int c = 0; c < payloadLength; c++) {
           payloadAsString += (char)payload[c];
         }
-        Serial.print(" Payload (as String): ");
-        Serial.println(payloadAsString);
+        //Serial.print(" Payload (as String): ");
+       // Serial.println(payloadAsString);
         caden(payloadAsString); Serial.write("\n");
         // id is probably blank and will return ""
         String uid = record.getId();
@@ -75,10 +75,17 @@ void sing(String m) {
 }
 void caden(String m) {
   int l;
+  int val;
   l = m.length();
   char chab[l];
+  int chd[l];
   m.toCharArray(chab, l);
-  for (int i = 3; i <= l+1; i++) {
-    Serial.write(chab[i]+2);
+  for (int i = 3; i <= l-1; i++) {
+    Serial.write(chab[i]);
   }
+   for (int i = 4; i <= l-2; i++) {
+    chd[i-4]=chab[i]-'0';
+    Serial.println(chd[i-4]);
+  }
+  Serial.write("\n");
 }
